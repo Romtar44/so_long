@@ -1,12 +1,12 @@
 NAME	:= so_long
 
-FILES	:= so_long.c
-SOURCES	:= $(addprefix sources/,$(FILES))
+FILES	:= init_left.c  map_checking.c  map_checking_utils.c  so_long.c
+FUGBCM	:= ugbcm_utils.c  ugbcm.c
+SOURCES	:= $(addprefix sources/,$(FILES)) $(addprefix Ultimate-Garbage-Collector-Master/,$(FUGBCM))
 OBJECTS	:= $(SOURCES:.c=.o)
 
 CC		:= gcc
 CFLAGS	:= -Wall -Wextra -Werror
-DFLAGS	 = -MMD -MF $(@:.o=.d)
 
 all: $(NAME)
 
