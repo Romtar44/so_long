@@ -1,12 +1,12 @@
 NAME	:= so_long
 
-FILES	:= init_left.c  map_checking.c  map_checking_utils.c  so_long.c
+FILES	:= init_left.c  map_checking.c  map_checking_utils.c  so_long.c texture_manager.c player_controler.c spritz_initalisator.c
 FUGBCM	:= ugbcm_utils.c  ugbcm.c
 SOURCES	:= $(addprefix sources/,$(FILES)) $(addprefix Ultimate-Garbage-Collector-Master/,$(FUGBCM))
 OBJECTS	:= $(SOURCES:.c=.o)
 
 CC		:= gcc
-CFLAGS	:= -Wall -Wextra -Werror
+CFLAGS	:= -Wall -Wextra -Werror -g
 
 all: $(NAME)
 

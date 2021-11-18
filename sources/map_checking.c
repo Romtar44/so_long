@@ -10,7 +10,8 @@ char	**ultimate_parser(t_game *g, char *tmp_map, char **ret)
 	g->map.column = many_n(tmp_map);
 	while (++i < g->map.line)
 	{
-		sz = many_n(tmp_map);
+		if (tmp_map)
+			sz = many_n(tmp_map);
 		if (sz != g->map.column)
 			ultimate_leave_in_bad_faith(g, EE_INVMAP);
 		ret[i] = better_than_malloc(&g->ugbcm, sz + 1, sizeof(char));
@@ -79,6 +80,11 @@ void	map_format_checker(t_game *g)
 			ultimate_leave_in_bad_faith(g, EE_INVMAP);
 		while (g->map.map[i][j])
 		{
+			if (g->map.map[i][j] == 'P')
+			{
+				g->player.x = j;
+				g->player.y = i;
+			}
 			valid_display(g, g->map.map[i][j]);
 			++j;
 		}
@@ -86,7 +92,7 @@ void	map_format_checker(t_game *g)
 			ultimate_leave_in_bad_faith(g, EE_INVMAP);
 		i++;
 	}
-	if (g->c_num < 1 || g->e_num != 1 || g->p_num != 1)
+	if (g->c_num <= 0 || g->e_num <= 0 || g->p_num != 1)
 		ultimate_leave_in_bad_faith(g, EE_INVMAP);
 }
 
@@ -102,12 +108,14 @@ void	parser_mapper_master(t_game *g, char *mapp)
 	fd = open(mapp, O_RDONLY | __O_NOFOLLOW);
 	if (fd < 0)
 		ultimate_leave_in_bad_faith(g, EE_INVMAP);
-	size = map_size(fd);
+	size = map_size(fd, g);
 	close(fd);
 	tmp_map = better_than_malloc(&g->ugbcm, size + 1, sizeof(char));
 	if (! tmp_map)
 		ultimate_leave_in_bad_faith(g, EE_INVMAL);
 	fd = open(mapp, O_RDONLY | __O_NOFOLLOW);
+	if (fd < 0)
+		ultimate_leave_in_bad_faith(g, EE_INVMAP);
 	read(fd, tmp_map, size);
 	close(fd);
 	tmp_map[size] = 0;

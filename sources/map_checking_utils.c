@@ -20,7 +20,7 @@ int	m_i_ber(char *str)
 	return (1);
 }
 
-size_t	map_size(int fd)
+size_t	map_size(int fd, t_game *g)
 {
 	size_t	bytes;
 	int		stop;
@@ -33,6 +33,8 @@ size_t	map_size(int fd)
 		stop = read(fd, &c, 1);
 		if (stop > 0)
 			++bytes;
+		else if (stop == -1)
+			ultimate_leave_in_bad_faith(g, EE_INVMAP);
 	}
 	return (bytes);
 }
@@ -45,7 +47,7 @@ size_t	n_ny_n(char *str)
 	i = -1;
 	ret = 1;
 	while (str[++i])
-		if (str[i] == '\n')
+		if (str[i] == '\n' && str[i + 1] != 0)
 			++ret;
 	return (ret);
 }
@@ -57,6 +59,8 @@ size_t	many_n(char *str)
 	ret = 0;
 	while (str[ret])
 	{
+		if (ret == 0 && str[ret] == '\n')
+			return (0);
 		if (str[ret] == '\n')
 			break ;
 		++ret;
@@ -68,6 +72,11 @@ char	*give_me_my_line(char *ret, char *tmp_map, int index, t_game *g)
 	int	i;
 
 	i = 0;
+	if (!tmp_map)
+	{
+		*ret = 0;
+		return (NULL);
+	}
 	while (tmp_map[i] != '\n' && tmp_map[i])
 	{
 		if ((index == 0 || index == g->map.line - 1) && tmp_map[i] != '1')
